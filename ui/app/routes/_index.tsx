@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from "react";
+import LoadingScreen from "../components/LoadingScreen";
 
 export default function Index() {
     const [isRAGOn, setIsRAGOn] = useState(false);
@@ -11,6 +12,7 @@ export default function Index() {
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [response, setResponse] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const ragFolderRef = useRef<HTMLInputElement | null>(null);
     const fineTuneFolderRef = useRef<HTMLInputElement | null>(null);
 
@@ -28,12 +30,15 @@ export default function Index() {
     }, []);
 
     const fetchModels = async () => {
+        setIsLoading(true);
         try {
             const response = await fetch("http://localhost:5000/models");
             const data = await response.json();
             setModels(data.models);
         } catch (error) {
             console.error("Error fetching models:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -54,6 +59,7 @@ export default function Index() {
     };
 
     const handleSubmit = async () => {
+        setIsLoading(true);
         const formData = new FormData();
         formData.append("modelName", selectedModel || "");
 
@@ -84,6 +90,8 @@ export default function Index() {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -121,8 +129,8 @@ export default function Index() {
     const handleQuerySubmit = async () => {
         if (!selectedModel || !query) return;
 
+        setIsLoading(true);
         try {
-            console.log({ model_name: selectedModel, query });
             const response = await fetch("http://localhost:5000/rag", {
                 method: "POST",
                 headers: {
@@ -139,11 +147,14 @@ export default function Index() {
             }
         } catch (error) {
             console.error("Error:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
     return (
         <>
+            {isLoading && <LoadingScreen />}
             <section className="h-screen bg-black text-white flex">
                 <section className="w-1/5 flex flex-col font-jose bg-[#522258]">
                     <section className="flex items-center text-3xl justify-center mr-6 pt-4">

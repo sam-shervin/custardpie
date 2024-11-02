@@ -1,6 +1,6 @@
+# FILE: api.py
 from flask import Flask, request, jsonify
 import os
-import logging
 from RAG.rag_model1 import create_rag_pipeline, query_LLM_pipeline
 
 UPLOADS_FOLDER = "./UPLOADS"
@@ -108,8 +108,6 @@ def finetune_algorithm(model_name):
     return jsonify({"message": "Fine-tune algorithm executed"}), 200
 
 if __name__ == '__main__':
-    # Configure logging
-    #logging.basicConfig(level=logging.DEBUG)
     app.config['DEBUG'] = True
     app.config['PROPAGATE_EXCEPTIONS'] = True
     app.run(debug=True)

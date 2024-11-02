@@ -115,6 +115,9 @@ export default function Index() {
     };
 
     const handleModelSelect = (model: string) => {
+        if (isCreatingModel) {
+            setIsCreatingModel(false);
+        }
         setSelectedModel(model);
         setRagFiles(null);
         setFineTuneFiles(null);
@@ -155,30 +158,33 @@ export default function Index() {
     return (
         <>
             {isLoading && <LoadingScreen />}
-            <section className="h-screen bg-black text-white flex">
-                <section className="w-1/5 flex flex-col font-jose bg-[#522258]">
-                    <section className="flex items-center text-3xl justify-center mr-6 pt-4">
-                        <img src="/logo.png" className="w-[100px]" alt="" />
-                        CustardPie
-                    </section>
-                    <section className="px-4">
-                        <p className="text-sm text-left">
-                            CustardPie is a SaaS platform that provides a simple
-                            way to customize LLM models per your needs.
-                        </p>
-                    </section>
-                    <section className="border text-9xl h-full overflow-y-auto overflow-x-hidden flex flex-col items-center justify-center relative">
-                        <button
-                            onClick={handleCreateModel}
-                            className="text-white text-2xl absolute top-2 right-2"
-                        >
-                            +
-                        </button>
+            <section className="h-[calc(100vh-10vh)] w-[calc(100vw-10vh)]  rounded-3xl text-[#1E2749] flex shadow-xl font-jose">
+                <section className="w-1/5 flex flex-col font-jose rounded-l-3xl bg-[#E4D9FF]">
+                    <section className="text-9xl h-full overflow-y-auto overflow-x-hidden px-3 flex flex-col items-center justify-center relative">
+                        <section className="border rounded-3xl border-[#1E2749] py-6 mb-12">
+                            <section className="flex items-center text-3xl font-semibold justify-center mr-6 pt-4">
+                                <img
+                                    src="/logo.png"
+                                    className="w-[100px]"
+                                    alt=""
+                                />
+                                <section>CustardPie</section>
+                            </section>
+                            <section className="px-4 py-3">
+                                <p className="text-lg text-center">
+                                    CustardPie is a SaaS platform that provides
+                                    a simple way to customize LLM models per
+                                    your needs.
+                                </p>
+                            </section>
+                        </section>
                         {models.map((model, index) => (
                             <div
                                 key={index}
-                                className={`text-xl mb-2 cursor-pointer ${
-                                    selectedModel === model ? "bg-gray-700" : ""
+                                className={`text-xl mb-2 cursor-pointer w-full rounded-3xl py-2 text-center ${
+                                    selectedModel === model
+                                        ? "bg-[#30343F] text-[#FAFAFF]"
+                                        : ""
                                 }`}
                                 onClick={() => handleModelSelect(model)}
                                 onKeyDown={(e) => {
@@ -192,10 +198,16 @@ export default function Index() {
                                 {model}
                             </div>
                         ))}
+                        <button
+                            onClick={handleCreateModel}
+                            className="text-[#30343F] text-4xl border w-full border-[#30343F] rounded-3xl hover:bg-[#273469] hover:text-[#FAFAFF] mb-36"
+                        >
+                            +
+                        </button>
                     </section>
                 </section>
                 <section className="w-4/5 flex">
-                    <section className="w-1/3 bg-[#8C3061] overflow-y-auto">
+                    <section className="w-1/3 bg-[#273469] items-center justify-around text-[#fafaff] text-center px-3 flex flex-col py-4 text-2xl overflow-y-auto">
                         {/* RAG Toggle */}
                         <div className="mb-4">
                             <label className="flex items-center space-x-2">
@@ -204,7 +216,7 @@ export default function Index() {
                                     checked={isRAGOn}
                                     onChange={() => setIsRAGOn(!isRAGOn)}
                                 />
-                                <span>RAG</span>
+                                <span className="font-bold text-4xl">RAG</span>
                             </label>
 
                             {isRAGOn && (
@@ -214,7 +226,7 @@ export default function Index() {
                                         <input
                                             id="ragFolder"
                                             type="file"
-                                            className="w-full p-2 bg-gray-700 rounded"
+                                            className="w-full p-2 bg-[#30343F] rounded"
                                             multiple
                                             ref={ragFolderRef}
                                             onChange={handleRagFolderSelect}
@@ -226,7 +238,7 @@ export default function Index() {
                                             id="ragWebsiteLink"
                                             type="text"
                                             placeholder="Enter website link"
-                                            className="w-full p-2 bg-gray-700 rounded"
+                                            className="w-full p-2 bg-[#30343F] rounded"
                                         />
                                     </div>
                                 </div>
@@ -242,7 +254,9 @@ export default function Index() {
                                         setIsFineTuneOn(!isFineTuneOn)
                                     }
                                 />
-                                <span>Fine-tune</span>
+                                <span className="font-bold text-4xl">
+                                    Fine-tune
+                                </span>
                             </label>
                             {isFineTuneOn && (
                                 <div className="mt-2 space-y-2">
@@ -251,7 +265,7 @@ export default function Index() {
                                         <input
                                             id="fineTuneFolder"
                                             type="file"
-                                            className="w-full p-2 bg-gray-700 rounded"
+                                            className="w-full p-2 bg-[#30343F] rounded"
                                             multiple
                                             ref={fineTuneFolderRef}
                                             onChange={
@@ -261,14 +275,11 @@ export default function Index() {
                                     </div>
                                     {/* Website Links Adder for Fine-tune */}
                                     <div>
-                                        <label htmlFor="fineTuneWebsiteLink">
-                                            Website Links:
-                                        </label>
                                         <input
                                             id="fineTuneWebsiteLink"
                                             type="text"
                                             placeholder="Enter website link"
-                                            className="w-full p-2 bg-gray-700 rounded"
+                                            className="w-full p-2 bg-[#30343F] rounded"
                                         />
                                     </div>
                                 </div>
@@ -278,16 +289,16 @@ export default function Index() {
                         <div className="mt-4">
                             <button
                                 onClick={handleSubmit}
-                                className="bg-blue-500 text-white px-4 py-2 rounded"
+                                className="bg-[#E4D9FF] text-[#30343F] px-4 py-2 rounded"
                             >
                                 Submit Files
                             </button>
                         </div>
                     </section>
-                    <section className="w-2/3 bg-[#C63C51] overflow-y-auto">
+                    <section className="w-2/3 rounded-r-3xl bg-[#E4D9FF] overflow-y-auto flex flex-col items-center justify-center text-center">
                         {isCreatingModel && (
                             <div className="p-4">
-                                <h2 className="text-2xl mb-4">
+                                <h2 className="text-2xl font-semibold mb-4">
                                     Create New Model
                                 </h2>
                                 <input
@@ -296,14 +307,14 @@ export default function Index() {
                                     onChange={handleModelNameChange}
                                     onKeyDown={handleModelNameSave}
                                     placeholder="Enter model name"
-                                    className="w-full p-2 bg-gray-700 rounded"
+                                    className="w-full p-2 bg-[#30343F] rounded"
                                 />
                             </div>
                         )}
-                        {selectedModel && (
+                        {!isCreatingModel && selectedModel && (
                             <div className="p-4">
-                                <h2 className="text-2xl mb-4">
-                                    Selected Model: {selectedModel}
+                                <h2 className="text-3xl font-bold mb-4">
+                                    {selectedModel}
                                 </h2>
                                 <div className="mt-4">
                                     <input
@@ -311,25 +322,27 @@ export default function Index() {
                                         value={query}
                                         onChange={handleQueryChange}
                                         placeholder="Enter your query"
-                                        className="w-full p-2 bg-gray-700 rounded"
+                                        className="w-full p-2 bg-[#30343F] text-[#E4D9FF] rounded"
                                     />
                                     <button
                                         onClick={handleQuerySubmit}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded mt-2"
+                                        className="bg-[#273469] text-white px-4 py-2 rounded mt-6"
                                     >
                                         Submit Query
                                     </button>
                                 </div>
                                 {response && (
-                                    <div className="mt-4 p-2 bg-gray-800 rounded">
-                                        <h3 className="text-xl">Response:</h3>
-                                        <p>{response}</p>
+                                    <div className="mt-4 p-2 bg-[#30343F] text-[#E4D9FF] rounded text-left">
+                                        {!response ? (
+                                            <h3 className="text-xl text-center">
+                                                Response
+                                            </h3>
+                                        ) : (
+                                            <p>{response}</p>
+                                        )}
                                     </div>
                                 )}
                             </div>
-                        )}
-                        {selectedModel && isRAGOn && isFineTuneOn && (
-                            <div className="p-4">{"Chat part"}</div>
                         )}
                     </section>
                 </section>

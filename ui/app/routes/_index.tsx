@@ -1,5 +1,10 @@
-import React, { useState, useRef, useEffect } from "react";
+// FILE: pages/Index.tsx
+import React, { useState, useRef } from "react";
 import LoadingScreen from "../components/LoadingScreen";
+import ModelList from "../components/ModelList";
+import RAGFineTuneForm from "../components/RAGFineTuneForm";
+import QueryForm from "../components/QueryForm";
+import useModels from "../hooks/useModels";
 
 export default function Index() {
     const [isRAGOn, setIsRAGOn] = useState(false);
@@ -8,39 +13,12 @@ export default function Index() {
     const [fineTuneFiles, setFineTuneFiles] = useState<FileList | null>(null);
     const [isCreatingModel, setIsCreatingModel] = useState(false);
     const [modelName, setModelName] = useState("");
-    const [models, setModels] = useState<string[]>([]);
     const [selectedModel, setSelectedModel] = useState<string | null>(null);
     const [query, setQuery] = useState("");
     const [response, setResponse] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const { models, isLoading, setIsLoading, setModels } = useModels();
     const ragFolderRef = useRef<HTMLInputElement | null>(null);
     const fineTuneFolderRef = useRef<HTMLInputElement | null>(null);
-
-    useEffect(() => {
-        if (ragFolderRef.current) {
-            ragFolderRef.current.setAttribute("webkitdirectory", "true");
-        }
-        if (fineTuneFolderRef.current) {
-            fineTuneFolderRef.current.setAttribute("webkitdirectory", "true");
-        }
-    }, [isRAGOn, isFineTuneOn]);
-
-    useEffect(() => {
-        fetchModels();
-    }, []);
-
-    const fetchModels = async () => {
-        setIsLoading(true);
-        try {
-            const response = await fetch("http://localhost:5000/models");
-            const data = await response.json();
-            setModels(data.models);
-        } catch (error) {
-            console.error("Error fetching models:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
 
     const handleRagFolderSelect = (
         event: React.ChangeEvent<HTMLInputElement>
@@ -158,194 +136,56 @@ export default function Index() {
     return (
         <>
             {isLoading && <LoadingScreen />}
-            <section className="h-[calc(100vh-10vh)] w-[calc(100vw-10vh)]  rounded-3xl text-[#1E2749] flex shadow-xl font-jose">
+            <section className="h-[calc(100vh-10vh)] w-[calc(100vw-10vh)] rounded-3xl text-[#1E2749] flex shadow-2xl font-jose">
                 <section className="w-1/5 flex flex-col font-jose rounded-l-3xl bg-[#E4D9FF]">
-                    <section className="text-9xl h-full overflow-y-auto overflow-x-hidden px-3 flex flex-col items-center justify-center relative">
-                        <section className="border rounded-3xl border-[#1E2749] py-6 mb-12">
-                            <section className="flex items-center text-3xl font-semibold justify-center mr-6 pt-4">
-                                <img
-                                    src="/logo.png"
-                                    className="w-[100px]"
-                                    alt=""
-                                />
-                                <section>CustardPie</section>
-                            </section>
-                            <section className="px-4 py-3">
-                                <p className="text-lg text-center">
-                                    CustardPie is a SaaS platform that provides
-                                    a simple way to customize LLM models per
-                                    your needs.
-                                </p>
-                            </section>
-                        </section>
-                        {models.map((model, index) => (
-                            <div
-                                key={index}
-                                className={`text-xl mb-2 cursor-pointer w-full rounded-3xl py-2 text-center ${
-                                    selectedModel === model
-                                        ? "bg-[#30343F] text-[#FAFAFF]"
-                                        : ""
-                                }`}
-                                onClick={() => handleModelSelect(model)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter" || e.key === " ") {
-                                        handleModelSelect(model);
-                                    }
-                                }}
-                                role="button"
-                                tabIndex={0}
-                            >
-                                {model}
-                            </div>
-                        ))}
-                        <button
-                            onClick={handleCreateModel}
-                            className="text-[#30343F] text-4xl border w-full border-[#30343F] rounded-3xl hover:bg-[#273469] hover:text-[#FAFAFF] mb-36"
-                        >
-                            +
-                        </button>
-                    </section>
+                    <ModelList
+                        models={models}
+                        selectedModel={selectedModel}
+                        onSelectModel={handleModelSelect}
+                        onCreateModel={handleCreateModel}
+                    />
+                    {isCreatingModel && (
+                        <div className="p-4">
+                            <h2 className="text-2xl mb-4">Create New Model</h2>
+                            <input
+                                type="text"
+                                value={modelName}
+                                onChange={handleModelNameChange}
+                                onKeyDown={handleModelNameSave}
+                                placeholder="Enter model name"
+                                className="w-full p-2 bg-[#30343F] text-[#FAFAFF] rounded"
+                            />
+                        </div>
+                    )}
                 </section>
-                <section className="w-4/5 flex">
-                    <section className="w-1/3 bg-[#273469] items-center justify-around text-[#fafaff] text-center px-3 flex flex-col py-4 text-2xl overflow-y-auto">
-                        {/* RAG Toggle */}
-                        <div className="mb-4">
-                            <label className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    checked={isRAGOn}
-                                    onChange={() => setIsRAGOn(!isRAGOn)}
-                                />
-                                <span className="font-bold text-4xl">RAG</span>
-                            </label>
-
-                            {isRAGOn && (
-                                <div className="mt-2 space-y-2">
-                                    {/* Folder Selector for RAG */}
-                                    <div>
-                                        <input
-                                            id="ragFolder"
-                                            type="file"
-                                            className="w-full p-2 bg-[#30343F] rounded"
-                                            multiple
-                                            ref={ragFolderRef}
-                                            onChange={handleRagFolderSelect}
-                                        />
-                                    </div>
-                                    {/* Website Links Adder for RAG */}
-                                    <div>
-                                        <input
-                                            id="ragWebsiteLink"
-                                            type="text"
-                                            placeholder="Enter website link"
-                                            className="w-full p-2 bg-[#30343F] rounded"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        {/* Fine-tune Toggle */}
-                        <div className="mb-4">
-                            <label className="flex items-center space-x-2">
-                                <input
-                                    type="checkbox"
-                                    checked={isFineTuneOn}
-                                    onChange={() =>
-                                        setIsFineTuneOn(!isFineTuneOn)
-                                    }
-                                />
-                                <span className="font-bold text-4xl">
-                                    Fine-tune
-                                </span>
-                            </label>
-                            {isFineTuneOn && (
-                                <div className="mt-2 space-y-2">
-                                    {/* Folder Selector for Fine-tune */}
-                                    <div>
-                                        <input
-                                            id="fineTuneFolder"
-                                            type="file"
-                                            className="w-full p-2 bg-[#30343F] rounded"
-                                            multiple
-                                            ref={fineTuneFolderRef}
-                                            onChange={
-                                                handleFineTuneFolderSelect
-                                            }
-                                        />
-                                    </div>
-                                    {/* Website Links Adder for Fine-tune */}
-                                    <div>
-                                        <input
-                                            id="fineTuneWebsiteLink"
-                                            type="text"
-                                            placeholder="Enter website link"
-                                            className="w-full p-2 bg-[#30343F] rounded"
-                                        />
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                        {/* Submit Button */}
-                        <div className="mt-4">
-                            <button
-                                onClick={handleSubmit}
-                                className="bg-[#E4D9FF] text-[#30343F] px-4 py-2 rounded"
-                            >
-                                Submit Files
-                            </button>
-                        </div>
+                {selectedModel ? (
+                    <>
+                        <RAGFineTuneForm
+                            isRAGOn={isRAGOn}
+                            isFineTuneOn={isFineTuneOn}
+                            onToggleRAG={() => setIsRAGOn(!isRAGOn)}
+                            onToggleFineTune={() =>
+                                setIsFineTuneOn(!isFineTuneOn)
+                            }
+                            onRagFolderSelect={handleRagFolderSelect}
+                            onFineTuneFolderSelect={handleFineTuneFolderSelect}
+                            onSubmit={handleSubmit}
+                            ragFolderRef={ragFolderRef}
+                            fineTuneFolderRef={fineTuneFolderRef}
+                        />
+                        <QueryForm
+                            selectedModel={selectedModel}
+                            query={query}
+                            response={response}
+                            onQueryChange={handleQueryChange}
+                            onQuerySubmit={handleQuerySubmit}
+                        />
+                    </>
+                ) : (
+                    <section className="w-4/5 bg-[#273469] flex items-center justify-center text-[#fafaff] text-2xl rounded-r-3xl">
+                        Please select a model to continue
                     </section>
-                    <section className="w-2/3 rounded-r-3xl bg-[#E4D9FF] overflow-y-auto flex flex-col items-center justify-center text-center">
-                        {isCreatingModel && (
-                            <div className="p-4">
-                                <h2 className="text-2xl font-semibold mb-4">
-                                    Create New Model
-                                </h2>
-                                <input
-                                    type="text"
-                                    value={modelName}
-                                    onChange={handleModelNameChange}
-                                    onKeyDown={handleModelNameSave}
-                                    placeholder="Enter model name"
-                                    className="w-full p-2 bg-[#30343F] rounded"
-                                />
-                            </div>
-                        )}
-                        {!isCreatingModel && selectedModel && (
-                            <div className="p-4">
-                                <h2 className="text-3xl font-bold mb-4">
-                                    {selectedModel}
-                                </h2>
-                                <div className="mt-4">
-                                    <input
-                                        type="text"
-                                        value={query}
-                                        onChange={handleQueryChange}
-                                        placeholder="Enter your query"
-                                        className="w-full p-2 bg-[#30343F] text-[#E4D9FF] rounded"
-                                    />
-                                    <button
-                                        onClick={handleQuerySubmit}
-                                        className="bg-[#273469] text-white px-4 py-2 rounded mt-6"
-                                    >
-                                        Submit Query
-                                    </button>
-                                </div>
-                                {response && (
-                                    <div className="mt-4 p-2 bg-[#30343F] text-[#E4D9FF] rounded text-left">
-                                        {!response ? (
-                                            <h3 className="text-xl text-center">
-                                                Response
-                                            </h3>
-                                        ) : (
-                                            <p>{response}</p>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-                        )}
-                    </section>
-                </section>
+                )}
             </section>
         </>
     );

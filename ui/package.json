@@ -5,12 +5,13 @@
     "type": "module",
     "scripts": {
         "build": "remix vite:build",
-        "server": "cd .. && py api.py",
+        "server": "cd ../server && python api.py",
         "dev": "remix vite:dev",
         "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
         "start": "remix-serve ./build/server/index.js",
         "typecheck": "tsc"
     },
+    "colorPallette": "https://coolors.co/30343f-fafaff-e4d9ff-273469-1e2749",
     "dependencies": {
         "@remix-run/node": "^2.12.1",
         "@remix-run/react": "^2.12.1",

@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import os
+import logging
 from RAG.rag_model1 import create_rag_pipeline, query_LLM_pipeline
 
 UPLOADS_FOLDER = "./UPLOADS"
@@ -91,10 +92,11 @@ def rag_algorithm():
         result = query_LLM_pipeline(model_name, query)
         return jsonify({"results" :result}), 200
     except FileNotFoundError as e:
+        app.logger.error(f"FileNotFoundError: {e}")
         return jsonify({"error": str(e)}), 404
     except Exception as e:
+        app.logger.error(f"Exception: {e}", exc_info=True)
         return jsonify({"error": str(e)}), 500
-
 
 @app.route('/finetune/<model_name>', methods=['POST'])
 def finetune_algorithm(model_name):
@@ -106,4 +108,8 @@ def finetune_algorithm(model_name):
     return jsonify({"message": "Fine-tune algorithm executed"}), 200
 
 if __name__ == '__main__':
+    # Configure logging
+    #logging.basicConfig(level=logging.DEBUG)
+    app.config['DEBUG'] = True
+    app.config['PROPAGATE_EXCEPTIONS'] = True
     app.run(debug=True)

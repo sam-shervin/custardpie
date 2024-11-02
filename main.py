@@ -1,4 +1,4 @@
-from RAG.rag_model1 import query_rag_pipeline, create_rag_pipeline
+from RAG.rag_model import query_rag_pipeline, create_rag_pipeline
 
 create_rag_pipeline("Astro")
 

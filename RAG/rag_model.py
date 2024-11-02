@@ -10,17 +10,6 @@ from chromadb import Documents, EmbeddingFunction, Embeddings
 # Initialize LLM
 llm = Ollama(model="llama3.2", request_timeout=420)
 
-# Define a prompt template for question answering
-qa_prompt = PromptTemplate(
-    "Context information is below.\n"
-    "---------------------\n"
-    "{context_str}\n"
-    "---------------------\n"
-    "Given the context information and not prior knowledge, "
-    "answer the query.\n"
-    "Query: {query_str}\n"
-    "Answer: "
-)
 
 class MyEmbeddingFunction(EmbeddingFunction):
     """Custom embedding function using Langchain's HuggingFaceEmbeddings."""

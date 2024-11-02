@@ -1,7 +1,7 @@
 # FILE: api.py
 from flask import Flask, request, jsonify
 import os
-from RAG.rag_model1 import create_rag_pipeline, query_LLM_pipeline
+from RAG.rag_model import create_rag_pipeline, query_LLM_pipeline
 
 UPLOADS_FOLDER = "./UPLOADS"
 RAG_UPLOADS_FOLDER = "RAG"

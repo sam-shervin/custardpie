@@ -62,11 +62,10 @@ const RAGFineTuneForm: React.FC<RAGFineTuneFormProps> = ({
                         </div>
                         {/* Website Links Adder for RAG */}
                         <div>
-                            <input
+                            <textarea
                                 id="ragWebsiteLink"
-                                type="text"
                                 placeholder="Enter website link"
-                                className="w-full p-2 bg-[#30343F] rounded"
+                                className="w-full p-2 bg-[#30343F] text-sm rounded"
                             />
                         </div>
                     </div>
@@ -97,11 +96,10 @@ const RAGFineTuneForm: React.FC<RAGFineTuneFormProps> = ({
                         </div>
                         {/* Website Links Adder for Fine-tune */}
                         <div>
-                            <input
+                            <textarea
                                 id="fineTuneWebsiteLink"
-                                type="text"
                                 placeholder="Enter website link"
-                                className="w-full p-2 bg-[#30343F] rounded"
+                                className="w-full p-2 bg-[#30343F] text-sm rounded"
                             />
                         </div>
                     </div>
@@ -113,7 +111,7 @@ const RAGFineTuneForm: React.FC<RAGFineTuneFormProps> = ({
                     onClick={onSubmit}
                     className="bg-[#E4D9FF] text-[#30343F] px-4 py-2 rounded"
                 >
-                    Submit Files
+                    Submit
                 </button>
             </div>
         </section>

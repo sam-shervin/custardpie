@@ -19,8 +19,10 @@ def add_cors_headers(response):
     """
     Adds CORS headers to allow cross-origin requests from specified frontend.
     """
-    response.headers['Access-Control-Allow-Origin'] = 'http://localhost:5173'
-    response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
+    origin = request.headers.get("Origin")
+    if origin in ["http://localhost:3000", "http://localhost:5173"]:
+        response.headers['Access-Control-Allow-Origin'] = origin
+        response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response
 
 

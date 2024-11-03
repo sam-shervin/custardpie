@@ -1,5 +1,5 @@
 // FILE: components/QueryForm.tsx
-import React from 'react';
+import React from "react";
 
 interface QueryFormProps {
     selectedModel: string | null;
@@ -9,7 +9,13 @@ interface QueryFormProps {
     onQuerySubmit: () => void;
 }
 
-const QueryForm: React.FC<QueryFormProps> = ({ selectedModel, query, response, onQueryChange, onQuerySubmit }) => {
+const QueryForm: React.FC<QueryFormProps> = ({
+    selectedModel,
+    query,
+    response,
+    onQueryChange,
+    onQuerySubmit,
+}) => {
     return (
         <section className="w-2/3 rounded-r-3xl bg-[#E4D9FF] overflow-y-auto flex flex-col items-center justify-center text-center">
             {selectedModel && (
@@ -23,7 +29,10 @@ const QueryForm: React.FC<QueryFormProps> = ({ selectedModel, query, response, o
                             placeholder="Enter your query"
                             className="w-full p-2 bg-[#30343F] text-[#E4D9FF] rounded"
                         />
-                        <button onClick={onQuerySubmit} className="bg-[#273469] text-white px-4 py-2 rounded mt-6">
+                        <button
+                            onClick={onQuerySubmit}
+                            className="bg-[#273469] text-white px-4 py-2 rounded mt-6"
+                        >
                             Submit Query
                         </button>
                     </div>

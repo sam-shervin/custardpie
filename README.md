@@ -58,7 +58,7 @@ pip install -r requirements.txt
 ### `requirements.txt`
 
 ```plaintext
-chromadb
+chromadb==0.4.24
 langchain-huggingface
 llama-index-llms-ollama
 llama-index-vector-stores-chroma

@@ -9,7 +9,7 @@ const useModels = () => {
         const fetchModels = async () => {
             setIsLoading(true);
             try {
-                const response = await fetch("http://localhost:5000/models");
+                const response = await fetch("http://127.0.0.1:5000/models");
                 const data = await response.json();
                 setModels(data.models);
                 setIsLoading(false);

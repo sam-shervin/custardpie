@@ -6,12 +6,17 @@ from llama_index.llms.ollama import Ollama
 from langchain_huggingface import HuggingFaceEmbeddings
 import chromadb
 from chromadb import Documents, EmbeddingFunction, Embeddings
+import torch.cuda as gpu
 
 # Initialize the large language model (LLM)
 llm = Ollama(model="llama3.2", request_timeout=420)
-
+device = "cuda" if gpu.is_available() else "cpu"
 # Embedding models for Langchain with prompt-specific embeddings
 lc_embed_model_prompt = HuggingFaceEmbeddings(
+    model_name="dunzhang/stella_en_400M_v5",
+    model_kwargs={"trust_remote_code": True, "device": "cpu", "config_kwargs":{"use_memory_efficient_attention": False, "unpad_inputs": False}},
+    encode_kwargs={"prompt_name": "s2p_query"}
+) if device == "cpu" else HuggingFaceEmbeddings(
     model_name="dunzhang/stella_en_400M_v5",
     model_kwargs={"trust_remote_code": True, "device": "cuda"},
     encode_kwargs={"prompt_name": "s2p_query"}

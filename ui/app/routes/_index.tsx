@@ -56,7 +56,7 @@ export default function Index() {
         }
 
         try {
-            const response = await fetch("http://localhost:5000/upload", {
+            const response = await fetch("http://127.0.0.1:5000/upload", {
                 method: "POST",
                 body: formData,
             });
@@ -112,7 +112,7 @@ export default function Index() {
 
         setIsLoading(true);
         try {
-            const response = await fetch("http://localhost:5000/rag", {
+            const response = await fetch("http://127.0.0.1:5000/rag", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

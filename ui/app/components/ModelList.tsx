@@ -23,7 +23,7 @@ const ModelList: React.FC<ModelListProps> = ({
                 </section>
                 <section className="px-4 py-3">
                     <p className="text-lg text-center">
-                        CustardPie is a SaaS platform that provides a simple way
+                        CustardPie is a platform that provides a simple way
                         to customize LLM models per your needs.
                     </p>
                 </section>

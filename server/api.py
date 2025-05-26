@@ -14,13 +14,26 @@ app = Flask(__name__)
 os.makedirs(UPLOADS_FOLDER, exist_ok=True)
 
 
+@app.before_request
+def block_disallowed_origins():
+    origin = request.headers.get("Origin")
+    allowed_origins = [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://rag.shervintech.me"
+    ]
+    if origin and origin not in allowed_origins:
+        return jsonify({"error": "CORS origin not allowed"}), 403
+
+
 @app.after_request
 def add_cors_headers(response):
-    """
-    Adds CORS headers to allow cross-origin requests from specified frontend.
-    """
     origin = request.headers.get("Origin")
-    if origin in ["http://localhost:3000", "http://localhost:5173"]:
+    if origin in [
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://rag.shervintech.me"
+    ]:
         response.headers['Access-Control-Allow-Origin'] = origin
         response.headers['Access-Control-Allow-Headers'] = 'Content-Type'
     return response

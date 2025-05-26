@@ -4,9 +4,9 @@
     "sideEffects": false,
     "type": "module",
     "scripts": {
-        "build": "remix build",
+        "build": "remix vite:build",
         "server": "cd ../server && python api.py",
-        "dev": "remix dev",
+        "dev": "remix vite:dev",
         "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
         "start": "remix-serve ./build/server/index.js",
         "typecheck": "tsc"
